@@ -18,17 +18,17 @@ locals {
 
 locals {
   region = {
-    amsterdam-2      = "ams2"
-    amsterdam-3      = "ams3"
-    bangalore-1      = "blr1"
-    frankfurt-1      = "fra1"
-    london           = "lon-1"
-    newyork-1        = "nyc1"
-    newyork-2        = "nyc2"
-    newyork-3        = "nyc3"
-    francisco-1      = "sfo1"
-    singapore-1      = "sgp1"
-    toronto-1        = "tor1"
+    amsterdam-2 = "ams2"
+    amsterdam-3 = "ams3"
+    bangalore-1 = "blr1"
+    frankfurt-1 = "fra1"
+    london      = "lon-1"
+    newyork-1   = "nyc1"
+    newyork-2   = "nyc2"
+    newyork-3   = "nyc3"
+    francisco-1 = "sfo1"
+    singapore-1 = "sgp1"
+    toronto-1   = "tor1"
   }
 }
 
@@ -53,13 +53,12 @@ module "labels" {
   label_order = var.label_order
 }
 
-
 #Module      : Droplet
 #Description : Provides a DigitalOcean Droplet resource. This can be used to create, modify, and delete Droplets.
 resource "digitalocean_droplet" "main" {
-  count =   var.droplet_enabled == true ? var.droplet_count : 0
+  count = var.droplet_enabled == true ? var.droplet_count : 0
   image = join("", data.digitalocean_image.official.*.id)
-  name  = format("%s%s%s",  module.labels.id, var.delimiter, (count.index))
+  name  = format("%s%s%s", module.labels.id, var.delimiter, (count.index))
 
   region             = coalesce(local.region[var.region], var.region)
   size               = coalesce(local.sizes[var.droplet_size], var.droplet_size)
@@ -71,12 +70,12 @@ resource "digitalocean_droplet" "main" {
   resize_disk        = var.resize_disk
   user_data          = var.user_data
 
-  tags =   [
-     module.labels.name,
-     module.labels.application,
-     module.labels.environment,
-     module.labels.createdby,
-     module.labels.managedby
+  tags = [
+    module.labels.name,
+    module.labels.application,
+    module.labels.environment,
+    module.labels.createdby,
+    module.labels.managedby
   ]
 }
 
@@ -85,14 +84,14 @@ resource "digitalocean_droplet" "main" {
 resource "digitalocean_volume" "main" {
   count = var.droplet_enabled == true ? var.droplet_count : 0
 
-  region = coalesce(local.region[var.region], var.region)
-  name = format("%s%s%s%s%s", module.labels.id,  var.delimiter , "volume", var.delimiter, (count.index))
-  size = var.block_storage_size
+  region                   = coalesce(local.region[var.region], var.region)
+  name                     = format("%s%s%s%s%s", module.labels.id, var.delimiter, "volume", var.delimiter, (count.index))
+  size                     = var.block_storage_size
   description              = "Block storage for ${element(digitalocean_droplet.main.*.name, count.index)}"
   initial_filesystem_label = var.block_storage_filesystem_label
   initial_filesystem_type  = var.block_storage_filesystem_type
-  tags =   [
-    format("%s%s%s%s%s", module.labels.id,  var.delimiter , "volume", var.delimiter, (count.index)),
+  tags = [
+    format("%s%s%s%s%s", module.labels.id, var.delimiter, "volume", var.delimiter, (count.index)),
     module.labels.application,
     module.labels.environment,
     module.labels.createdby,
@@ -113,14 +112,14 @@ resource "digitalocean_volume_attachment" "main" {
 #Module      : Floating Ip
 #Description : Provides a DigitalOcean Floating IP to represent a publicly-accessible static IP addresses that can be mapped to one of your Droplets.
 resource "digitalocean_floating_ip" "main" {
-  count  = var.floating_ip == true && var.droplet_enabled == true  ? var.droplet_count : 0
+  count  = var.floating_ip == true && var.droplet_enabled == true ? var.droplet_count : 0
   region = coalesce(local.region[var.region], var.region)
 }
 
 #Module      : Floating Ip Assignment
 #Description : Provides a DigitalOcean Floating IP to represent a publicly-accessible static IP addresses that can be mapped to one of your Droplets.
 resource "digitalocean_floating_ip_assignment" "main" {
-  count      = var.floating_ip == true && var.droplet_enabled  == true ? var.droplet_count : 0
+  count = var.floating_ip == true && var.droplet_enabled == true ? var.droplet_count : 0
 
   ip_address = element(digitalocean_floating_ip.main.*.id, count.index)
   droplet_id = element(digitalocean_droplet.main.*.id, count.index)

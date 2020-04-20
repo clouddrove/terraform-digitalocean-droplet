@@ -4,11 +4,11 @@
 
 
 <h1 align="center">
-    Terraform AWS EC2
+    Terraform Digitalocean Droplet
 </h1>
 
 <p align="center" style="font-size: 1.2rem;">
-    Terraform module to create an EC2 resource on AWS with Elastic IP Addresses and Elastic Block Store.
+    Provides a DigitalOcean Block Storage volume which can be attached to a Droplet in order to provide expanded storage
      </p>
 
 <p align="center">
@@ -24,13 +24,13 @@
 </p>
 <p align="center">
 
-<a href='https://facebook.com/sharer/sharer.php?u=https://github.com/clouddrove/terraform-aws-ec2'>
+<a href='https://facebook.com/sharer/sharer.php?u=https://github.com/clouddrove/terraform-digitalocean-droplet'>
   <img title="Share on Facebook" src="https://user-images.githubusercontent.com/50652676/62817743-4f64cb80-bb59-11e9-90c7-b057252ded50.png" />
 </a>
-<a href='https://www.linkedin.com/shareArticle?mini=true&title=Terraform+AWS+EC2&url=https://github.com/clouddrove/terraform-aws-ec2'>
+<a href='https://www.linkedin.com/shareArticle?mini=true&title=Terraform+Digitalocean+Droplet&url=https://github.com/clouddrove/terraform-digitalocean-droplet'>
   <img title="Share on LinkedIn" src="https://user-images.githubusercontent.com/50652676/62817742-4e339e80-bb59-11e9-87b9-a1f68cae1049.png" />
 </a>
-<a href='https://twitter.com/intent/tweet/?text=Terraform+AWS+EC2&url=https://github.com/clouddrove/terraform-aws-ec2'>
+<a href='https://twitter.com/intent/tweet/?text=Terraform+Digitalocean+Droplet&url=https://github.com/clouddrove/terraform-digitalocean-droplet'>
   <img title="Share on Twitter" src="https://user-images.githubusercontent.com/50652676/62817740-4c69db00-bb59-11e9-8a79-3580fbbf6d5c.png" />
 </a>
 
@@ -65,38 +65,28 @@ This module has a few dependencies:
 ## Examples
 
 
-**IMPORTANT:** Since the `master` branch used in `source` varies based on new modifications, we suggest that you use the release versions [here](https://github.com/clouddrove/terraform-aws-ec2/releases).
+**IMPORTANT:** Since the `master` branch used in `source` varies based on new modifications, we suggest that you use the release versions [here](https://github.com/clouddrove/terraform-digitalocean-droplet/releases).
 
 
 ### Simple Example
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
-    module "ec2" {
-      source                      = "git::https://github.com/clouddrove/terraform-aws-ec2.git?ref=tags/0.12.5"
-      name                        = "ec2-instance"
-      application                 = "clouddrove"
-      environment                 = "test"
-      label_order                 = ["environment", "application", "name"]
-      instance_count              = 2
-      ami                         = "ami-08d658f84a6d84a80"
-      instance_type               = "t2.nano"
-      key_name                    = module.keypair.name
-      monitoring                  = false
-      tenancy                     = "default"
-      vpc_security_group_ids_list = [module.ssh.security_group_ids, module.http-https.security_group_ids]
-      subnet_ids                  = tolist(module.public_subnets.public_subnet_id)
-      assign_eip_address          = true
-      associate_public_ip_address = true
-      instance_profile_enabled    = true
-      iam_instance_profile        = module.iam-role.name
-      disk_size                   = 8
-      ebs_optimized               = false
-      ebs_volume_enabled          = true
-      ebs_volume_type             = "gp2"
-      ebs_volume_size             = 30
-      instance_tags               = { "snapshot" = true }
-      dns_zone_id                 = "Z1XJD7SSBKXLC1"
-      hostname                    = "ec2"
+    module "droplet" {
+      source = "git::https://github.com/clouddrove/terraform-digitalocean-droplet.git"
+      name              = "droplet"
+      application       = "clouddrove"
+      environment       = "test"
+      label_order       = ["environment", "application", "name"]
+      droplet_count      = 1
+      region             = "bangalore-1"
+      ssh_keys           =  [module.ssh_key.fingerprint]
+      droplet_size       = "nano"
+      monitoring         = false
+      private_networking = true
+      ipv6               = false
+      floating_ip        = true
+      block_storage_size = 5
+      user_data          = file("user-data.sh")
     }
 ```
 
@@ -109,72 +99,40 @@ Here is an example of how you can use this module in your inventory structure:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| ami | The AMI to use for the instance. | string | - | yes |
 | application | Application (e.g. `cd` or `clouddrove`). | string | `` | no |
-| assign_eip_address | Assign an Elastic IP address to the instance. | bool | `false` | no |
-| associate_public_ip_address | Associate a public IP address with the instance. | bool | `true` | no |
-| attributes | Additional attributes (e.g. `1`). | list | `<list>` | no |
-| availability_zone | Availability Zone the instance is launched in. If not set, will be launched in the first AZ of the region. | list | `<list>` | no |
-| cpu_core_count | Sets the number of CPU cores for an instance. | string | `` | no |
-| cpu_credits | The credit option for CPU usage. Can be `standard` or `unlimited`. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. | string | `standard` | no |
+| backups | Boolean controlling if backups are made. Defaults to false. | bool | `false` | no |
+| block_storage_filesystem_label | Initial filesystem label for the block storage volume. | string | `data` | no |
+| block_storage_filesystem_type | Initial filesystem type (xfs or ext4) for the block storage volume. | string | `xfs` | no |
+| block_storage_size | (Required) The size of the block storage volume in GiB. If updated, can only be expanded. | string | `0` | no |
+| createdby | CreatedBy, eg 'terraform'. | string | `terraform` | no |
+| custom_image | Whether the image is custom or not (an official image) | string | `false` | no |
 | delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `-` | no |
-| disable_api_termination | If true, enables EC2 Instance Termination Protection. | bool | `false` | no |
-| disk_size | Size of the root volume in gigabytes. | number | `8` | no |
-| dns_enabled | Flag to control the dns_enable. | bool | `false` | no |
-| dns_zone_id | The Zone ID of Route53. | string | `` | no |
-| ebs_block_device | Additional EBS block devices to attach to the instance. | list | `<list>` | no |
-| ebs_device_name | Name of the EBS device to mount. | list(string) | `<list>` | no |
-| ebs_iops | Amount of provisioned IOPS. This must be set with a volume_type of io1. | number | `0` | no |
-| ebs_optimized | If true, the launched EC2 instance will be EBS-optimized. | bool | `false` | no |
-| ebs_volume_enabled | Flag to control the ebs creation. | bool | `false` | no |
-| ebs_volume_size | Size of the EBS volume in gigabytes. | number | `30` | no |
-| ebs_volume_type | The type of EBS volume. Can be standard, gp2 or io1. | string | `gp2` | no |
+| droplet_count | The number of droplets / other resources to create | string | `1` | no |
+| droplet_enabled | Flag to control the droplet creation. | bool | `true` | no |
+| droplet_size | the size slug of a droplet size | string | `micro` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
-| ephemeral_block_device | Customize Ephemeral (also known as Instance Store) volumes on the instance. | list | `<list>` | no |
-| host_id | The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host. | string | `` | no |
-| hostname | DNS records to create. | string | `` | no |
-| iam_instance_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | string | `` | no |
-| instance_count | Number of instances to launch. | number | `1` | no |
-| instance_enabled | Flag to control the instance creation. | bool | `true` | no |
-| instance_initiated_shutdown_behavior | Shutdown behavior for the instance. | string | `` | no |
-| instance_profile_enabled | Flag to control the instance profile creation. | bool | `false` | no |
-| instance_tags | Instance tags. | map | `<map>` | no |
-| instance_type | The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance. | string | - | yes |
-| ipv6_address_count | Number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet. | number | `0` | no |
-| ipv6_addresses | List of IPv6 addresses from the range of the subnet to associate with the primary network interface. | list | `<list>` | no |
-| key_name | The key name to use for the instance. | string | `` | no |
+| floating_ip | (Optional) Boolean to control whether floating IPs should be created. | string | `false` | no |
+| floating_ip_assign | (Optional) Boolean controlling whether floatin IPs should be assigned to instances with Terraform. | string | `true` | no |
+| floating_ip_count | Number of floating IPs to create. | string | `` | no |
+| image_id | The id of an image to use. | string | `` | no |
+| image_name | The image name or slug to lookup. | string | `ubuntu-18-04-x64` | no |
+| ipv6 | (Optional) Boolean controlling if IPv6 is enabled. Defaults to false. | string | `false` | no |
 | label_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
-| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | string | `anmol@clouddrove.com` | no |
-| monitoring | If true, the launched EC2 instance will have detailed monitoring enabled. (Available since v0.6.0). | bool | `false` | no |
+| monitoring | (Optional) Boolean controlling whether monitoring agent is installed. Defaults to false. | string | `false` | no |
 | name | Name  (e.g. `app` or `cluster`). | string | `` | no |
-| network_interface | Customize network interfaces to be attached at instance boot time. | list(map(string)) | `<list>` | no |
-| placement_group | The Placement Group to start the instance in. | string | `` | no |
-| root_block_device | Customize details about the root block device of the instance. See Block Devices below for details. | list | `<list>` | no |
-| source_dest_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | bool | `true` | no |
-| subnet | VPC Subnet ID the instance is launched in. | string | `` | no |
-| subnet_ids | A list of VPC Subnet IDs to launch in. | list(string) | `<list>` | no |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | map | `<map>` | no |
-| tenancy | The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. | string | `` | no |
-| ttl | The TTL of the record to add to the DNS zone to complete certificate validation. | string | `300` | no |
-| type | Type of DNS records to create. | string | `CNAME` | no |
-| user_data | The Base64-encoded user data to provide when launching the instances. | string | `` | no |
-| vpc_security_group_ids_list | A list of security group IDs to associate with. | list(string) | `<list>` | no |
+| private_networking | (Optional) Boolean controlling if private networks are enabled. Defaults to false. | string | `false` | no |
+| region | The region to create VPC, like ``london-1`` , ``bangalore-1`` ,``newyork-3`` ``toronto-1``. | string | `bangalore-1` | no |
+| resize_disk | (Optional) Boolean controlling whether to increase the disk size when resizing a Droplet. It defaults to true. When set to false, only the Droplet's RAM and CPU will be resized. Increasing a Droplet's disk size is a permanent change. Increasing only RAM and CPU is reversible. | string | `true` | no |
+| ssh_keys | (Optional) A list of SSH IDs or fingerprints to enable in the format [12345, 123456]. To retrieve this info, use a tool such as curl with the DigitalOcean API, to retrieve them. | list | `<list>` | no |
+| user_data | (Optional) A string of the desired User Data for the Droplet. | string | `` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| arn | The ARN of the instance. |
-| az | The availability zone of the instance. |
-| instance_count | The count of instances. |
-| instance_id | The instance ID. |
-| ipv6_addresses | A list of assigned IPv6 addresses. |
-| key_name | The key name of the instance. |
-| placement_group | The placement group of the instance. |
-| private_ip | Private IP of instance. |
-| public_ip | Public IP of instance (or EIP). |
-| subnet_id | The EC2 subnet ID. |
-| vpc_security_group_ids | The associated security groups in non-default VPC. |
+| id | The ID of the Droplet. |
+| name | The name of the Droplet. |
+| urn | The uniform resource name of the Droplet. |
 
 
 
@@ -190,9 +148,9 @@ You need to run the following command in the testing folder:
 
 
 ## Feedback
-If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-aws-ec2/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
+If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-digitalocean-droplet/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
-If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-aws-ec2)!
+If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-digitalocean-droplet)!
 
 ## About us
 
