@@ -44,6 +44,7 @@ usage : |-
         droplet_count      = 1
         region             = "bangalore-1"
         ssh_keys           =  [module.ssh_key.fingerprint]
+        vpc_uuid           = module.vpc.id
         droplet_size       = "nano"
         monitoring         = false
         private_networking = true

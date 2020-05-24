@@ -80,6 +80,7 @@ Here is an example of how you can use this module in your inventory structure:
       droplet_count      = 1
       region             = "bangalore-1"
       ssh_keys           =  [module.ssh_key.fingerprint]
+      vpc_uuid           = module.vpc.id
       droplet_size       = "nano"
       monitoring         = false
       private_networking = true
@@ -125,6 +126,7 @@ Here is an example of how you can use this module in your inventory structure:
 | resize_disk | (Optional) Boolean controlling whether to increase the disk size when resizing a Droplet. It defaults to true. When set to false, only the Droplet's RAM and CPU will be resized. Increasing a Droplet's disk size is a permanent change. Increasing only RAM and CPU is reversible. | bool | `true` | no |
 | ssh_keys | (Optional) A list of SSH IDs or fingerprints to enable in the format [12345, 123456]. To retrieve this info, use a tool such as curl with the DigitalOcean API, to retrieve them. | list | `<list>` | no |
 | user_data | (Optional) A string of the desired User Data for the Droplet. | string | `` | no |
+| vpc_uuid | The ID of the VPC where the Droplet will be located. | string | `` | no |
 
 ## Outputs
 

@@ -69,6 +69,7 @@ resource "digitalocean_droplet" "main" {
   ssh_keys           = var.ssh_keys
   resize_disk        = var.resize_disk
   user_data          = var.user_data
+  vpc_uuid           = var.vpc_uuid
 
   tags = [
     module.labels.name,
