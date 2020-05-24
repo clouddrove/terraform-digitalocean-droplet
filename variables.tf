@@ -157,3 +157,9 @@ variable "user_data" {
   default     = ""
   description = "(Optional) A string of the desired User Data for the Droplet."
 }
+
+variable "vpc_uuid" {
+  type        = string
+  default     = ""
+  description = "The ID of the VPC where the Droplet will be located."
+}

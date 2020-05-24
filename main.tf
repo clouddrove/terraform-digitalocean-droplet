@@ -45,7 +45,7 @@ data "digitalocean_image" "official" {
 #              tags for resources. You can use terraform-labels to implement a strict
 #              naming convention.
 module "labels" {
-  source = "git::https://github.com/clouddrove/terraform-digitalocean-labels.git"
+  source = "git::https://github.com/clouddrove/terraform-digitalocean-labels.git?ref=tags/0.12.0"
 
   name        = var.name
   application = var.application
@@ -57,9 +57,9 @@ module "labels" {
 #Description : Provides a DigitalOcean Droplet resource. This can be used to create, modify, and delete Droplets.
 resource "digitalocean_droplet" "main" {
   count = var.droplet_enabled == true ? var.droplet_count : 0
-  image = join("", data.digitalocean_image.official.*.id)
-  name  = format("%s%s%s", module.labels.id, var.delimiter, (count.index))
 
+  image              = join("", data.digitalocean_image.official.*.id)
+  name               = format("%s%s%s", module.labels.id, var.delimiter, (count.index))
   region             = coalesce(local.region[var.region], var.region)
   size               = coalesce(local.sizes[var.droplet_size], var.droplet_size)
   backups            = var.backups
@@ -69,6 +69,7 @@ resource "digitalocean_droplet" "main" {
   ssh_keys           = var.ssh_keys
   resize_disk        = var.resize_disk
   user_data          = var.user_data
+  vpc_uuid           = var.vpc_uuid
 
   tags = [
     module.labels.name,
@@ -124,6 +125,5 @@ resource "digitalocean_floating_ip_assignment" "main" {
   ip_address = element(digitalocean_floating_ip.main.*.id, count.index)
   droplet_id = element(digitalocean_droplet.main.*.id, count.index)
   depends_on = [digitalocean_droplet.main]
-
 }
 

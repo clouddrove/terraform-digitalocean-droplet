@@ -36,7 +36,7 @@ usage : |-
   Here is an example of how you can use this module in your inventory structure:
   ```hcl
       module "droplet" {
-        source = "git::https://github.com/clouddrove/terraform-digitalocean-droplet.git"
+        source = "git::https://github.com/clouddrove/terraform-digitalocean-droplet.git?ref=tags/0.12.0"
         name              = "droplet"
         application       = "clouddrove"
         environment       = "test"
@@ -44,6 +44,7 @@ usage : |-
         droplet_count      = 1
         region             = "bangalore-1"
         ssh_keys           =  [module.ssh_key.fingerprint]
+        vpc_uuid           = module.vpc.id
         droplet_size       = "nano"
         monitoring         = false
         private_networking = true
