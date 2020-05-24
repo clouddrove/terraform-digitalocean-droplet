@@ -5,7 +5,7 @@ provider "digitalocean" {
 }
 
 module "ssh_key" {
-  source         = "git::https://github.com/clouddrove/terraform-digitalocean-ssh-key.git"
+  source         = "git::https://github.com/clouddrove/terraform-digitalocean-ssh-key.git?ref=tags/0.12.0"
   key_path       = "~/.ssh/id_rsa.pub"
   key_name       = "devops"
   enable_ssh_key = true
