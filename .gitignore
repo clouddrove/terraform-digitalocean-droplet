@@ -4,4 +4,4 @@
 .terraform
 .idea
 *.iml
-go.mod
+go.sum
