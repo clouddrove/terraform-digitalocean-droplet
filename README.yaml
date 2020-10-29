@@ -36,7 +36,7 @@ usage : |-
   Here is an example of how you can use this module in your inventory structure:
   ```hcl
       module "droplet" {
-        source            = "clouddrove/droplet/aws"
+        source            = "clouddrove/droplet/digitalocean"
         version           = "0.13.0"
         name              = "droplet"
         application       = "clouddrove"
