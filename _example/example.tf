@@ -1,11 +1,12 @@
 provider "digitalocean" {
   # You need to set this in your .bashrc
-  # export DIGITALOCEAN_TOKEN="Your API TOKEN"
+  #export DIGITALOCEAN_TOKEN="Your API TOKEN"
   #
 }
 
 module "vpc" {
-  source      = "git::https://github.com/clouddrove/terraform-digitalocean-vpc.git?ref=tags/0.12.0"
+  source      = "clouddrove/vpc/digitalocean"
+  version     = "0.13.0"
   name        = "vpc"
   application = "clouddrove"
   environment = "test"
@@ -16,7 +17,8 @@ module "vpc" {
 
 
 module "ssh_key" {
-  source         = "git::https://github.com/clouddrove/terraform-digitalocean-ssh-key.git?ref=tags/0.12.0"
+  source         = "clouddrove/ssh-key/digitalocean"
+  version        = "0.13.0"
   key_path       = "~/.ssh/id_rsa.pub"
   key_name       = "devops"
   enable_ssh_key = true
