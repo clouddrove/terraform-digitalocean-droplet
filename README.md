@@ -7,14 +7,14 @@
     Terraform Digitalocean Droplet
 </h1>
 
-<p align="center" style="font-size: 1.2rem;">
+<p align="center" style="font-size: 1.2rem;"> 
     Provides a DigitalOcean Block Storage volume which can be attached to a Droplet in order to provide expanded storage
      </p>
 
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v0.12-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/Terraform-v0.13-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -38,7 +38,7 @@
 <hr>
 
 
-We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
+We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure. 
 
 This module is basically combination of [Terraform open source](https://www.terraform.io/) and includes automatation tests and examples. It also helps to create and improve your infrastructure with minimalistic code instead of maintaining the whole infrastructure code yourself.
 
@@ -49,9 +49,9 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 ## Prerequisites
 
-This module has a few dependencies:
+This module has a few dependencies: 
 
-- [Terraform 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
 - [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
 - [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
@@ -72,11 +72,12 @@ This module has a few dependencies:
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
     module "droplet" {
-      source = "git::https://github.com/clouddrove/terraform-digitalocean-droplet.git?ref=tags/0.12.0"
-      name              = "droplet"
-      application       = "clouddrove"
-      environment       = "test"
-      label_order       = ["environment", "application", "name"]
+      source             = "clouddrove/droplet/digitalocean"
+      version            = "0.13.0"
+      name               = "droplet"
+      application        = "clouddrove"
+      environment        = "test"
+      label_order        = ["environment", "application", "name"]
       droplet_count      = 1
       region             = "bangalore-1"
       ssh_keys           =  [module.ssh_key.fingerprint]
@@ -99,34 +100,34 @@ Here is an example of how you can use this module in your inventory structure:
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| application | Application (e.g. `cd` or `clouddrove`). | string | `` | no |
-| backups | Boolean controlling if backups are made. Defaults to false. | bool | `false` | no |
-| block_storage_filesystem_label | Initial filesystem label for the block storage volume. | string | `data` | no |
-| block_storage_filesystem_type | Initial filesystem type (xfs or ext4) for the block storage volume. | string | `xfs` | no |
-| block_storage_size | (Required) The size of the block storage volume in GiB. If updated, can only be expanded. | number | `0` | no |
-| createdby | CreatedBy, eg 'terraform'. | string | `terraform` | no |
-| custom_image | Whether the image is custom or not (an official image) | bool | `false` | no |
-| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `-` | no |
-| droplet_count | The number of droplets / other resources to create | number | `1` | no |
-| droplet_enabled | Flag to control the droplet creation. | bool | `true` | no |
-| droplet_size | the size slug of a droplet size | string | `micro` | no |
-| environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
-| floating_ip | (Optional) Boolean to control whether floating IPs should be created. | bool | `false` | no |
-| floating_ip_assign | (Optional) Boolean controlling whether floatin IPs should be assigned to instances with Terraform. | bool | `true` | no |
-| floating_ip_count | Number of floating IPs to create. | string | `` | no |
-| image_id | The id of an image to use. | string | `` | no |
-| image_name | The image name or slug to lookup. | string | `ubuntu-18-04-x64` | no |
-| ipv6 | (Optional) Boolean controlling if IPv6 is enabled. Defaults to false. | bool | `false` | no |
-| label_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
-| monitoring | (Optional) Boolean controlling whether monitoring agent is installed. Defaults to false. | bool | `false` | no |
-| name | Name  (e.g. `app` or `cluster`). | string | `` | no |
-| private_networking | (Optional) Boolean controlling if private networks are enabled. Defaults to false. | bool | `false` | no |
-| region | The region to create VPC, like ``london-1`` , ``bangalore-1`` ,``newyork-3`` ``toronto-1``. | string | `bangalore-1` | no |
-| resize_disk | (Optional) Boolean controlling whether to increase the disk size when resizing a Droplet. It defaults to true. When set to false, only the Droplet's RAM and CPU will be resized. Increasing a Droplet's disk size is a permanent change. Increasing only RAM and CPU is reversible. | bool | `true` | no |
-| ssh_keys | (Optional) A list of SSH IDs or fingerprints to enable in the format [12345, 123456]. To retrieve this info, use a tool such as curl with the DigitalOcean API, to retrieve them. | list | `<list>` | no |
-| user_data | (Optional) A string of the desired User Data for the Droplet. | string | `` | no |
-| vpc_uuid | The ID of the VPC where the Droplet will be located. | string | `` | no |
+|------|-------------|------|---------|:--------:|
+| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
+| backups | Boolean controlling if backups are made. Defaults to false. | `bool` | `false` | no |
+| block\_storage\_filesystem\_label | Initial filesystem label for the block storage volume. | `string` | `"data"` | no |
+| block\_storage\_filesystem\_type | Initial filesystem type (xfs or ext4) for the block storage volume. | `string` | `"xfs"` | no |
+| block\_storage\_size | (Required) The size of the block storage volume in GiB. If updated, can only be expanded. | `number` | `0` | no |
+| createdby | CreatedBy, eg 'terraform'. | `string` | `"terraform"` | no |
+| custom\_image | Whether the image is custom or not (an official image) | `bool` | `false` | no |
+| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | `string` | `"-"` | no |
+| droplet\_count | The number of droplets / other resources to create | `number` | `1` | no |
+| droplet\_enabled | Flag to control the droplet creation. | `bool` | `true` | no |
+| droplet\_size | the size slug of a droplet size | `string` | `"micro"` | no |
+| environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
+| floating\_ip | (Optional) Boolean to control whether floating IPs should be created. | `bool` | `false` | no |
+| floating\_ip\_assign | (Optional) Boolean controlling whether floatin IPs should be assigned to instances with Terraform. | `bool` | `true` | no |
+| floating\_ip\_count | Number of floating IPs to create. | `string` | `""` | no |
+| image\_id | The id of an image to use. | `string` | `""` | no |
+| image\_name | The image name or slug to lookup. | `string` | `"ubuntu-18-04-x64"` | no |
+| ipv6 | (Optional) Boolean controlling if IPv6 is enabled. Defaults to false. | `bool` | `false` | no |
+| label\_order | Label order, e.g. `name`,`application`. | `list` | `[]` | no |
+| monitoring | (Optional) Boolean controlling whether monitoring agent is installed. Defaults to false. | `bool` | `false` | no |
+| name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| private\_networking | (Optional) Boolean controlling if private networks are enabled. Defaults to false. | `bool` | `false` | no |
+| region | The region to create VPC, like `london-1` , `bangalore-1` ,`newyork-3` `toronto-1`. | `string` | `"bangalore-1"` | no |
+| resize\_disk | (Optional) Boolean controlling whether to increase the disk size when resizing a Droplet. It defaults to true. When set to false, only the Droplet's RAM and CPU will be resized. Increasing a Droplet's disk size is a permanent change. Increasing only RAM and CPU is reversible. | `bool` | `true` | no |
+| ssh\_keys | (Optional) A list of SSH IDs or fingerprints to enable in the format [12345, 123456]. To retrieve this info, use a tool such as curl with the DigitalOcean API, to retrieve them. | `list` | `[]` | no |
+| user\_data | (Optional) A string of the desired User Data for the Droplet. | `string` | `""` | no |
+| vpc\_uuid | The ID of the VPC where the Droplet will be located. | `string` | `""` | no |
 
 ## Outputs
 
@@ -140,7 +141,7 @@ Here is an example of how you can use this module in your inventory structure:
 
 
 ## Testing
-In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system.
+In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system. 
 
 You need to run the following command in the testing folder:
 ```hcl
@@ -149,7 +150,7 @@ You need to run the following command in the testing folder:
 
 
 
-## Feedback
+## Feedback 
 If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-digitalocean-droplet/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
 If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-digitalocean-droplet)!
