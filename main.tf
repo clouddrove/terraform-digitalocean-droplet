@@ -45,8 +45,8 @@ data "digitalocean_image" "official" {
 #              tags for resources. You can use terraform-labels to implement a strict
 #              naming convention.
 module "labels" {
-  source      = "clouddrove/labels/digitalocean"
-  version     = "0.13.0"
+  source  = "clouddrove/labels/digitalocean"
+  version = "0.13.0"
 
   name        = var.name
   application = var.application

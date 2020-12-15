@@ -17,7 +17,7 @@ module "vpc" {
 
 
 module "ssh_key" {
-  source         = "clouddrove/syigitalocean"
+  source         = "clouddrove/ssh-key/digitalocean"
   version        = "0.13.0"
   key_path       = "~/.ssh/id_rsa.pub"
   key_name       = "devops"
