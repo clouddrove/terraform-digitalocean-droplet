@@ -19,7 +19,7 @@ variable "environment" {
 }
 
 variable "label_order" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Label order, e.g. `name`,`application`."
 }
@@ -61,10 +61,16 @@ variable "block_storage_filesystem_type" {
   description = "Initial filesystem type (xfs or ext4) for the block storage volume."
 }
 
+variable "block_storage_enabled" {
+  type        = bool
+  default     = false
+  description = "(Optional) Boolean to control whether an additional block storage should be created."
+}
+
 variable "block_storage_size" {
   type        = number
   default     = 0
-  description = "(Required) The size of the block storage volume in GiB. If updated, can only be expanded."
+  description = "(Required if block_storage_enabled = true) The size of the block storage volume in GiB. If updated, can only be expanded."
 }
 
 variable "custom_image" {
@@ -147,7 +153,7 @@ variable "resize_disk" {
 }
 
 variable "ssh_keys" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "(Optional) A list of SSH IDs or fingerprints to enable in the format [12345, 123456]. To retrieve this info, use a tool such as curl with the DigitalOcean API, to retrieve them."
 }
