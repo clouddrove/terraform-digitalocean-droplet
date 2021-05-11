@@ -83,7 +83,7 @@ resource "digitalocean_droplet" "main" {
 #Module      : Volume
 #Description : Provides a DigitalOcean Block Storage volume which can be attached to a Droplet in order to provide expanded storage.
 resource "digitalocean_volume" "main" {
-  count = var.droplet_enabled == true ? var.droplet_count : 0
+  count = var.block_storage_enabled == true ? 1 : 0
 
   region                   = coalesce(local.region[var.region], var.region)
   name                     = format("%s%s%s%s%s", module.labels.id, var.delimiter, "volume", var.delimiter, (count.index))
@@ -104,7 +104,7 @@ resource "digitalocean_volume" "main" {
 #Module      : Volume Attachment
 #Description : Manages attaching a Volume to a Droplet.
 resource "digitalocean_volume_attachment" "main" {
-  count = var.droplet_enabled == true ? var.droplet_count : 0
+  count = var.block_storage_enabled == true ? 1 : 0
 
   droplet_id = element(digitalocean_droplet.main.*.id, count.index)
   volume_id  = element(digitalocean_volume.main.*.id, count.index)
