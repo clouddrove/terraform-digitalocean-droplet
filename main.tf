@@ -22,7 +22,7 @@ locals {
     amsterdam-3 = "ams3"
     bangalore-1 = "blr1"
     frankfurt-1 = "fra1"
-    london      = "lon-1"
+    london      = "lon1"
     newyork-1   = "nyc1"
     newyork-2   = "nyc2"
     newyork-3   = "nyc3"
