@@ -5,20 +5,21 @@ provider "digitalocean" {
 }
 
 module "vpc" {
-  source      = "clouddrove/vpc/digitalocean"
-  version     = "0.13.0"
+  source = "git::https://github.com/terraform-do-modules/terraform-digitalocean-vpc.git?ref=0.15"
+  #version     = "0.15.0"
   name        = "vpc"
-  application = "clouddrove"
   environment = "test"
-  label_order = ["environment", "application", "name"]
+  label_order = ["environment", "name"]
   enable_vpc  = true
   region      = "bangalore-1"
+  ip_range    = "10.0.0.0/16"
+
 }
 
 
 module "ssh_key" {
-  source         = "clouddrove/ssh-key/digitalocean"
-  version        = "0.13.0"
+  source = "git::https://github.com/terraform-do-modules/terraform-digitalocean-ssh-key.git?ref=0.15"
+  #version        = "0.15.0"
   key_path       = "~/.ssh/id_rsa.pub"
   key_name       = "devops"
   enable_ssh_key = true
@@ -27,9 +28,8 @@ module "ssh_key" {
 module "droplet" {
   source             = "./../"
   name               = "droplet"
-  application        = "clouddrove"
   environment        = "test"
-  label_order        = ["environment", "application", "name"]
+  label_order        = ["environment", "name"]
   droplet_count      = 1
   region             = "bangalore-1"
   ssh_keys           = [module.ssh_key.fingerprint]

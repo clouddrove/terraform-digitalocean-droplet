@@ -45,10 +45,9 @@ data "digitalocean_image" "official" {
 #              tags for resources. You can use terraform-labels to implement a strict
 #              naming convention.
 module "labels" {
-  source      = "clouddrove/labels/digitalocean"
-  version     = "0.13.0"
+  source = "git::https://github.com/terraform-do-modules/terraform-digitalocean-labels.git?ref=0.15"
+  # version     = "0.15.0"
   name        = var.name
-  application = var.application
   environment = var.environment
   label_order = var.label_order
 }
@@ -73,7 +72,6 @@ resource "digitalocean_droplet" "main" {
 
   tags = [
     module.labels.name,
-    module.labels.application,
     module.labels.environment,
     module.labels.createdby,
     module.labels.managedby
@@ -93,7 +91,6 @@ resource "digitalocean_volume" "main" {
   initial_filesystem_type  = var.block_storage_filesystem_type
   tags = [
     format("%s%s%s%s%s", module.labels.id, var.delimiter, "volume", var.delimiter, (count.index)),
-    module.labels.application,
     module.labels.environment,
     module.labels.createdby,
     module.labels.managedby
