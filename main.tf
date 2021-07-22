@@ -73,7 +73,6 @@ resource "digitalocean_droplet" "main" {
   tags = [
     module.labels.name,
     module.labels.environment,
-    module.labels.createdby,
     module.labels.managedby
   ]
 }
@@ -92,7 +91,6 @@ resource "digitalocean_volume" "main" {
   tags = [
     format("%s%s%s%s%s", module.labels.id, var.delimiter, "volume", var.delimiter, (count.index)),
     module.labels.environment,
-    module.labels.createdby,
     module.labels.managedby
   ]
 
