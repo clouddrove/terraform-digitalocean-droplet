@@ -6,11 +6,6 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
-variable "application" {
-  type        = string
-  default     = ""
-  description = "Application (e.g. `cd` or `clouddrove`)."
-}
 
 variable "environment" {
   type        = string
@@ -61,16 +56,10 @@ variable "block_storage_filesystem_type" {
   description = "Initial filesystem type (xfs or ext4) for the block storage volume."
 }
 
-variable "block_storage_enabled" {
-  type        = bool
-  default     = false
-  description = "(Optional) Boolean to control whether an additional block storage should be created."
-}
-
 variable "block_storage_size" {
   type        = number
   default     = 0
-  description = "(Required if block_storage_enabled = true) The size of the block storage volume in GiB. If updated, can only be expanded."
+  description = "(Required) The size of the block storage volume in GiB. If updated, can only be expanded."
 }
 
 variable "custom_image" {

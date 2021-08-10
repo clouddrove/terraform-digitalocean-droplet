@@ -46,9 +46,8 @@ data "digitalocean_image" "official" {
 #              naming convention.
 module "labels" {
   source      = "clouddrove/labels/digitalocean"
-  version     = "0.13.0"
+  version     = "0.15.0"
   name        = var.name
-  application = var.application
   environment = var.environment
   label_order = var.label_order
 }
@@ -73,9 +72,7 @@ resource "digitalocean_droplet" "main" {
 
   tags = [
     module.labels.name,
-    module.labels.application,
     module.labels.environment,
-    module.labels.createdby,
     module.labels.managedby
   ]
 }
@@ -83,7 +80,7 @@ resource "digitalocean_droplet" "main" {
 #Module      : Volume
 #Description : Provides a DigitalOcean Block Storage volume which can be attached to a Droplet in order to provide expanded storage.
 resource "digitalocean_volume" "main" {
-  count = var.block_storage_enabled == true ? 1 : 0
+  count = var.droplet_enabled == true ? var.droplet_count : 0
 
   region                   = coalesce(local.region[var.region], var.region)
   name                     = format("%s%s%s%s%s", module.labels.id, var.delimiter, "volume", var.delimiter, (count.index))
@@ -93,9 +90,7 @@ resource "digitalocean_volume" "main" {
   initial_filesystem_type  = var.block_storage_filesystem_type
   tags = [
     format("%s%s%s%s%s", module.labels.id, var.delimiter, "volume", var.delimiter, (count.index)),
-    module.labels.application,
     module.labels.environment,
-    module.labels.createdby,
     module.labels.managedby
   ]
 
@@ -104,7 +99,7 @@ resource "digitalocean_volume" "main" {
 #Module      : Volume Attachment
 #Description : Manages attaching a Volume to a Droplet.
 resource "digitalocean_volume_attachment" "main" {
-  count = var.block_storage_enabled == true ? 1 : 0
+  count = var.droplet_enabled == true ? var.droplet_count : 0
 
   droplet_id = element(digitalocean_droplet.main.*.id, count.index)
   volume_id  = element(digitalocean_volume.main.*.id, count.index)
