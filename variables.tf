@@ -114,7 +114,7 @@ variable "image_id" {
 variable "image_name" {
   type        = string
   description = "The image name or slug to lookup."
-  default     = "ubuntu-18-04-x64"
+  default     = "ubuntu-20-04-x64"
 }
 
 variable "ipv6" {
