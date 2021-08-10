@@ -14,7 +14,7 @@
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v0.13-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/Terraform-v0.15-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -51,7 +51,7 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 This module has a few dependencies: 
 
-- [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [Terraform 0.15](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
 - [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
 - [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
@@ -73,14 +73,13 @@ Here is an example of how you can use this module in your inventory structure:
 ```hcl
     module "droplet" {
       source             = "clouddrove/droplet/digitalocean"
-      version            = "0.13.0"
+      version            = "0.15.0"
       name               = "droplet"
-      application        = "clouddrove"
       environment        = "test"
-      label_order        = ["environment", "application", "name"]
+      label_order        = ["environment", "name"]
       droplet_count      = 1
       region             = "bangalore-1"
-      ssh_keys           =  [module.ssh_key.fingerprint]
+      ssh_keys           = [module.ssh_key.fingerprint]
       vpc_uuid           = module.vpc.id
       droplet_size       = "nano"
       monitoring         = false
@@ -101,12 +100,10 @@ Here is an example of how you can use this module in your inventory structure:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
 | backups | Boolean controlling if backups are made. Defaults to false. | `bool` | `false` | no |
-| block\_storage\_enabled | (Optional) Boolean to control whether an additional block storage should be created. | `bool` | `false` | no |
 | block\_storage\_filesystem\_label | Initial filesystem label for the block storage volume. | `string` | `"data"` | no |
 | block\_storage\_filesystem\_type | Initial filesystem type (xfs or ext4) for the block storage volume. | `string` | `"xfs"` | no |
-| block\_storage\_size | (Required if block\_storage\_enabled = true) The size of the block storage volume in GiB. If updated, can only be expanded. | `number` | `0` | no |
+| block\_storage\_size | (Required) The size of the block storage volume in GiB. If updated, can only be expanded. | `number` | `0` | no |
 | createdby | CreatedBy, eg 'terraform'. | `string` | `"terraform"` | no |
 | custom\_image | Whether the image is custom or not (an official image) | `bool` | `false` | no |
 | delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | `string` | `"-"` | no |
@@ -118,7 +115,7 @@ Here is an example of how you can use this module in your inventory structure:
 | floating\_ip\_assign | (Optional) Boolean controlling whether floatin IPs should be assigned to instances with Terraform. | `bool` | `true` | no |
 | floating\_ip\_count | Number of floating IPs to create. | `string` | `""` | no |
 | image\_id | The id of an image to use. | `string` | `""` | no |
-| image\_name | The image name or slug to lookup. | `string` | `"ubuntu-18-04-x64"` | no |
+| image\_name | The image name or slug to lookup. | `string` | `"ubuntu-20-04-x64"` | no |
 | ipv6 | (Optional) Boolean controlling if IPv6 is enabled. Defaults to false. | `bool` | `false` | no |
 | label\_order | Label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
 | monitoring | (Optional) Boolean controlling whether monitoring agent is installed. Defaults to false. | `bool` | `false` | no |
