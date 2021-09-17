@@ -8,7 +8,7 @@ locals {
     micro     = "s-2vcpu-2gb"
     small     = "s-2vcpu-4gb"
     medium    = "s-4vcpu-8gb"
-    large     = "s-6vcpu-16gb"
+    large     = "s-4vcpu-16gb"
     x-large   = "s-8vcpu-32gb"
     xx-large  = "s-16vcpu-64gb"
     xxx-large = "s-24vcpu-128gb"
