@@ -57,7 +57,7 @@ module "labels" {
 resource "digitalocean_droplet" "main" {
   count = var.droplet_enabled == true ? var.droplet_count : 0
 
-  image              = join("", data.digitalocean_image.official.*.id)
+  image              = coalesce(var.image_id, join("", data.digitalocean_image.official.*.id))
   name               = format("%s%s%s", module.labels.id, var.delimiter, (count.index))
   region             = coalesce(local.region[var.region], var.region)
   size               = coalesce(local.sizes[var.droplet_size], var.droplet_size)
