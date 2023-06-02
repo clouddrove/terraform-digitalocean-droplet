@@ -1,8 +1,8 @@
-# /*name: 'Create README.md file'
+name: 'Create README.md file'
 # on:
 #   push:
 #     branches:
-#       - master*/
+#       - master
 
 jobs:
   readme-create:

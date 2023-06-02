@@ -1,4 +1,4 @@
-# name: 'Terratest GitHub Actions'
+name: 'Terratest GitHub Actions'
 # on:
 #   pull_request:
 #     branches:

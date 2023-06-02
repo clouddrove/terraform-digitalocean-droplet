@@ -1,4 +1,4 @@
-# name: 'Terraform GitHub Actions'
+name: 'Terraform GitHub Actions'
 # on:
 #   pull_request:
 #     branches:
