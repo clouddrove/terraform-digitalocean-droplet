@@ -1,9 +1,9 @@
-name: 'Terratest GitHub Actions'
-on:
-  pull_request:
-    branches:
-      - master
-    types: [labeled]
+# name: 'Terratest GitHub Actions'
+# on:
+#   pull_request:
+#     branches:
+#       - master
+#     types: [labeled]
 
 jobs:
   terraform:
